@@ -184,6 +184,18 @@ class ScheduledNotification
         return new self($this->scheduleNotificationModel->reschedule($sendAt, $force));
     }
 
+    public static function getPendingNotifications(int $tolerance = null): \Illuminate\Database\Eloquent\Collection
+    {
+        $modelClass = self::getScheduledNotificationModelClass();
+
+        return $modelClass::query()
+            ->whereNull('sent_at')
+            ->whereNull('cancelled_at')
+            ->where('send_at', '<=', Carbon::now())
+            ->where('send_at', '>=', Carbon::now()->subSeconds($tolerance ?? 60))
+            ->get();
+    }
+
     /**
      * @param  DateTimeInterface|string  $sendAt
      * @return self

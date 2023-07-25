@@ -31,11 +31,7 @@ class SendScheduledNotifications extends Command
     {
         $tolerance = config('snooze.sendTolerance');
 
-        $notifications = ScheduledNotification::whereNull('sent_at')
-                                ->whereNull('cancelled_at')
-                                ->where('send_at', '<=', Carbon::now())
-                                ->where('send_at', '>=', Carbon::now()->subSeconds($tolerance ?? 60))
-                                ->get();
+        $notifications = ScheduledNotification::getPendingNotifications($tolerance);
 
         if (! $notifications->count()) {
             $this->info('No Scheduled Notifications need to be sent.');
