@@ -48,7 +48,7 @@ class SendScheduledNotifications extends Command
 
         $this->info(sprintf('Sending %d scheduled notifications...', $notifications->count()));
 
-        $notifications->each(function (ScheduledNotification $notification) use ($bar) {
+        $notifications->each(function (ScheduledNotificationModel $notification) use ($bar) {
             $bar->advance();
 
             try {
